@@ -80,15 +80,27 @@
       /*position: absolute;*/
     }
 
+    .arrow-up:active {
+      position:relative;
+      top:1px;
+      border-bottom: 60px solid #005885;
+    }
+
     .arrow-down {
       width: 0; 
       height: 0; 
-      border-left: 60px solid transparent;
-      border-right: 60px solid transparent;
-      border-top: 60px solid #027EBD;
-      margin-left: 1em;
+      border-left: 80px solid transparent;
+      border-right: 80px solid transparent;
+      border-top: 80px solid #027EBD;
+      margin-left: 0em;
       /*display: inline-block;*/
       /*position: absolute;*/
+    }
+
+    .arrow-down:active {
+      position:relative;
+      border-top: 60px solid #005885;
+      bottom:1px;
     }
 
     .arrow-right {
@@ -100,6 +112,13 @@
       margin-top: 1em; 
       /*display: inline-block;*/
       /*position: relative;*/
+      transform: skewX(30deg);
+    }
+
+    .arrow-right:active {
+      position:relative;
+      border-left: 60px solid #005885;
+      top:1px;
     }
 
     .arrow-left {
@@ -111,11 +130,18 @@
       margin-top: 1em;
       /*display: inline-block;*/
       /*position: relative;*/
+      transform: skewX(-30deg);
     }
 
-    .row {
-      border: solid black;
+    .arrow-left:active {
+      position:relative;
+      border-right: 60px solid #005885;
+      top: 0.5px;
     }
+
+/*    .row {
+      border: solid black;
+    }*/
 
   </style>
 
