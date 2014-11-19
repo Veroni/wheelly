@@ -1,0 +1,84 @@
+      font-family: 'Lora', serif;
+/*      background: url('http://i.imgur.com/0iujfE0.jpg') no-repeat right top;*/
+      background-attachment: fixed;
+      background-size: 100% 100%;
+      background-color: #ECECEC;
+        padding: 40px;
+      overflow-x: hidden; /* For Opera */
+      -webkit-box-shadow:
+        inset #19d4ff 0 0 0 5px,
+        inset #18cdf7 0 0 0 1px,
+        inset #53dfff 0 0 0 10px,
+        inset #50d8f7 0 0 0 11px,
+        inset #8ce9ff 0 0 0 16px,
+        inset #88e2f7 0 0 0 17px,
+        inset #c5f4ff 0 0 0 22px,
+        inset #bfecf7 0 0 0 23px;
+      -moz-box-shadow:
+        inset #19d4ff 0 0 0 5px,
+        inset #18cdf7 0 0 0 1px,
+        inset #53dfff 0 0 0 10px,
+        inset #50d8f7 0 0 0 11px,
+        inset #8ce9ff 0 0 0 16px,
+        inset #88e2f7 0 0 0 17px,
+        inset #c5f4ff 0 0 0 22px,
+        inset #bfecf7 0 0 0 23px;
+      box-shadow:
+        inset #19d4ff 0 0 0 5px,
+        inset #18cdf7 0 0 0 1px,
+        inset #53dfff 0 0 0 10px,
+        inset #50d8f7 0 0 0 11px,
+        inset #8ce9ff 0 0 0 16px,
+        inset #88e2f7 0 0 0 17px,
+        inset #c5f4ff 0 0 0 22px,
+        inset #bfecf7 0 0 0 23px;
+    }
+
+        .row {
+      /*border: solid green;*/
+      display: block;
+      vertical-align: middle;
+      horizontal-align: middle;
+    }
+
+
+/*    body {
+      border: 2px solid green;
+      vertical-align: middle;
+      horizontal-align: middle;
+      position: relative;
+      margin: 0 auto 0 auto;
+      background: url('http://www.imgbase.info/images/safe-wallpapers/digital_art/abstract/4614_green.jpg');
+    }*/
+
+    
+/*    #connectWheelly {
+      border-radius: 25em;
+      padding: 1em 1em 1em 1em;
+      text-align: center;
+      background: #6EF22C;
+      position: fixed;
+      top: 50%;
+      left:50%;
+      margin-top: -50px;
+      margin-left: -100px;
+      box-shadow: 0px 0px 5px #666;
+
+    }*/
+
+        .arrow {
+      position: relative;
+      margin: auto;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      /*width: 50%;
+      /*height: 50%;*/
+    }
+
+    
+ /*   .footer {
+      position: absolute;
+      bottom: 0%;
+    }*/
