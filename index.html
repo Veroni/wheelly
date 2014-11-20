@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <title>The page</title>
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="stylesheets/application.css">
-</head>
 
-<body>
-  <style type="text/css">
+  <script src="robotMovement.js"></script>
+  <style>
 
 /*    html { 
       height: 100%;
@@ -15,18 +15,14 @@
       margin: 3em 3em 3em 3em;
       border: solid black;
       }*/
-/*
+    *:focus {
+        outline:none;
+    }
+
     #buttonBox {
-      margin: auto;
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      height: 50%;
-      border: solid black;
-    }*/
+      margin-top: 100px;
+      margin-bottom: 100px;
+    }
 
     .connectWheelly {
       -moz-box-shadow:inset 2px 19px 15px -4px #d9fbbe;
@@ -44,7 +40,6 @@
       -webkit-border-radius:42px;
       border-radius:42px;
       display:inline-block;
-      cursor:pointer;
       color:#ffffff;
       font-family:arial;
       font-size:28px;
@@ -98,9 +93,9 @@
     }
 
     .arrow-down:active {
-      position:relative;
-      border-top: 60px solid #005885;
-      bottom:1px;
+      /*position:relative;*/
+      border-top: 79px solid #005885;
+      
     }
 
     .arrow-right {
@@ -139,35 +134,55 @@
       top: 0.5px;
     }
 
+    .stopButton {
+       margin-bottom: 2em;
+       margin-top: 1em;
+       margin-left: 1em;
+       margin-right: 1em;
+       background: #027EBD;
+       font-size: 30px ;
+    }
+
 /*    .row {
       border: solid black;
     }*/
 
   </style>
+</head>
 
+<body>
   <div class="container">
-    </div>
     <div class="row">
-      <div class="col-md-12">
-        <div class="container">
-          <button type="submit" class="connectWheelly">Connect Wheelly</button>
-        </div>
+      <div class="col-md-4 col-md-offset-4" id="buttonBox">
+        <button class="connectWheelly">Connect Wheelly</button>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12 footer">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-          <div class="row">
-            <div class="col-md-3 arrow-left"></div>
-              <div class= "col-md-6">
-                <div class="arrow-up"></div>
-                <div class="arrow-down"></div>
+      <div class="col-md-3">&nbsp;</div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-2 arrow-left direction" data-cmd="turnLeft">
+            
+          </div>
+          <div class= "col-md-5 col-md-offset-2">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="arrow-up direction" data-cmd="moveForward"></div>
               </div>
-            <div class="col-md-3 arrow-right"></div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="arrow-down direction" data-cmd="stopMoving"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 col-md-offset-1 arrow-right direction" data-cmd="turnRight">
+            
           </div>
         </div>
-        <div class="col-md-4"></div>
+      </div>
+      <div class="col-md-3">&nbsp;</div>
     </div>
   </div>
 </body>
+</html>
