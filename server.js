@@ -21,6 +21,7 @@
 
 //Initialize express and server
 var express = require('express')
+var path = require('path')
 var app = express()
         ,server = require('http').createServer(app);
 
@@ -28,11 +29,11 @@ var app = express()
 server.listen(80);
 
 //Set '/public' as the static folder
-app.use(express.static(_dirname + '/public'));
+app.use(express.static(path.resolve() + '/public'));
 
 //Set index.html as the base file
 app.get('/', function (req, res) {
-        res.sendfile(_dirname + '/index.html')
+        res.sendfile(path.resolve() + '/index.html')
 });
 
 //Link socket.io to the previosly created server
