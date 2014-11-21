@@ -1,68 +1,46 @@
-// var ws = require('ws').Server,
-//           server = new ws({port: 6666}),
-//           clients = [];
+var ws = require('ws').Server,
+          server = new ws({port: 6666});
 
-// if (server) {
-//   console.log('server started');
-// }
+if (server) {
+  console.log('server started');
+}
 
-// server.on('connection', function(client)){
-//   clients.push(client);
+server.on('connection', function(client){
+  console.log('Got a new web connection.');
 
+  client.on('message', function(message) {
+    var payload = JSON.parse(message);
+    console.log('CMD:', message);
 
+    var commands = [moveForward, stopMoving, turnLeft, turnRight];
 
-//   client.on('close', function(){
-//     console.log('disconnected');
-//   });
+    commands[payload.cmd]();
+    });
 
-// };
+  client.on('close', function(){
+    console.log('disconnected');
+  });
 
-
-
-//Initialize express and server
-var express = require('express')
-var path = require('path')
-var app = express()
-        ,server = require('http').createServer(app);
-
-//Access server through port 80
-server.listen(80);
-
-//Set '/public' as the static folder
-app.use(express.static(path.resolve() + '/public'));
-
-//Set index.html as the base file
-app.get('/', function (req, res) {
-        res.sendfile(path.resolve() + '/index.html')
+  var playload = {cmd: 'system', value: 'Connected to Wheelly'};
+  client.send(JSON.stringify(payload));
 });
 
-//Link socket.io to the previosly created server
-var io = require('socket.io').listen(server);
 
-//When connected
-io.sockets.on('connection', function (socket){
-        //Send out message
-        socket.emit('wheelly connected', { data: 'Connected' });
-
-        //When received 'robot command' message from this connection
-        socket.on('robot command', function (data){
-                console.log(data);
-
-                //Update Arduino motor values if the received command is correct
-                var command = data.command;
-        });
-});
-
-var five = require('johnny-five'),
+// var raspi = require('raspi-io'),
+var five = require("johnny-five"),
+        // board, sonar;
+        // board;
         //Initialize connection to Arduino (will crash if none is attached)
-        board = new five.board();
+        board = new five.Board();
+          // io: new raspi()
+        // });
 
         //Initialize motors as pin 0(right) and 1(left)
-        var motorRight = new five.Pin(0);
-        var motorLeft = new five.Pin(1);
+var motorRight = new five.Pin(0);
+var motorLeft = new five.Pin(1);
 
-        //When connection is ready
-        board.on("ready", function(){
+//When connection is ready
+board.on("ready", function(){
 
         function moveForward() {
                 motorRight.write(0);
@@ -83,12 +61,13 @@ var five = require('johnny-five'),
                 motorRight.write(0);
                 motorLeft.write(1);
         };
+
+        //create a new 'sonar' hardware instance
+        // sonar = new five.Sonar(2);
+
+        // sonar.on("data", function(){
+        //   console.log("data", "Object is " +  this.inches + "inches away");
+        // });
 });
 
 
-// client.on('message', function(message) {
-//   var payload = JSON.parse(message.data);
-//   var commands = [moveForward, stopMoving, turnLeft, turnRight];
-
-//   commands[payload.cmd]();
-// })
