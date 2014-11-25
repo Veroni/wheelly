@@ -40,10 +40,10 @@ server.on('connection', function(client){
 
     // var commands = [moveForward, stopMoving, turnLeft, turnRight];
     var commands = { 
-                  moveForward: function() { moveForward(32) },
-                  moveLeft: function() { moveLeft(32) },
-                  moveRight: function() { moveRight(32) },
-                  moveBackward: function() { moveBackward(32) }
+                  moveForward: function() { moveForward() },
+                  moveLeft: function() { moveLeft() },
+                  moveRight: function() { moveRight() },
+                  moveBackward: function() { moveBackward() }
      };
 
     commands[payload.cmd]();
@@ -121,11 +121,23 @@ console.log("board on");
     this.digitalWrite(8, num2);
   };
 
+  // var setMotorDirection = function(speed, state) {
+  //     if (speed > 0) {
+  //       state(1, 0);
+  //     } else if (Speed < 0) {
+  //       stateL(0, 1);
+  //     } else { // Speed == 0
+  //       state(0, 0);
+  //     }
+  // };
+
   function setState(leftSpeed, rightSpeed) {
     if (Math.abs(leftSpeed) > speedLevels.length || Math.abs(rightSpeed) > speedLevels.length) {
       console.log("Error: Speed level is invalid. leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
     } else {
       //set direction for left motor
+      //setMotorDirection(leftSpeed, stateL);
+      //setMotorDirection(rightSpeed, stateR);
       if (leftSpeed > 0) {
         stateL(1, 0);
       } else if (leftSpeed < 0) {
@@ -143,65 +155,53 @@ console.log("board on");
         stateR(0, 0);
       }
     }
-  }
+  };
 
-  function moveForward(speed) {
+  function setSpeed(index1, index2) {
 
-    // Speed
-    this.analogWrite(9, speed);
+    // Speed right motor
+    var indexR = speedLevels.indexOf(rightSpeed) + index2;
+    rightSpeed = speedLevels[indexR];
+    this.analogWrite(9, rightSpeed);
+    // Speed left motor
+    var indexL = speedLevels.indexOf(leftSpeed) + index1;
+    leftSpeed = speedLevels[indexL];
+    this.analogWrite(10, leftSpeed);
+  };
 
-    // Speed
-    this.analogWrite(10, speed);
+  // function checkSpeedLevel(speed) {
+  //   return speedLevels.indexOf(speed);
+  // };
+
+  function moveForward() {
+    setState(leftSpeed, rightSpeed);
+    setSpeed(1, 1);
 
     console.log("Forvard move");
         };
 
-  function moveBackward(speed) {
-        //Right Motor 
-    // Speed
-    this.analogWrite(9, speed);
-
-    // Left Motor
-    // Speed
-    this.analogWrite(10, speed);
+  function moveBackward() {
+    setState(-leftSpeed, -rightSpeed);
+    setSpeed(-1, -1);
 
     console.log("Backward move");
   };
 
-  function turnLeft(speed) {
-    //Right Motor 
-    // Speed
-    this.analogWrite(9, speed);
+  function turnLeft() {
+    setState(-leftSpeed, rightSpeed);
+    setSpeed(0, 1);
 
-    // Left Motor;
-    // Speed
-    this.analogWrite(10, speed);
-
-    console.log("turn Left");
+    console.log("Turn Left");
   };
 
-  function turnRight(speed) {
-    //Right Motor 
-    // Speed
-    this.analogWrite(9, speed);
+  function turnRight() {
+    setState(leftSpeed, -rightSpeed);
+    setSpeed(1, 0);
 
-    // Left Motor
-    // Speed
-    this.analogWrite(10, speed);
-
-    console.log("turn right");
+    console.log("Turn right");
   };
 
 });
-
-
-// $(".direction").on('click',function(){
-//   var command = {cmd: $(this).data('cmd')};
-//   connection.send(JSON.stringify(command));
-// });
-
-
-
 
 
 // var movenent = {
