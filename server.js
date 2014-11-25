@@ -40,10 +40,10 @@ server.on('connection', function(client){
 
     // var commands = [moveForward, stopMoving, turnLeft, turnRight];
     var commands = { 
-                  moveForward: function() { console.log("moveForward"); },
-                  moveLeft: function() { console.log("moveLeft"); },
-                  moveRight: function() { console.log("moveRight"); },
-                  moveBackward: function() { console.log("moveBackward"); }
+                  moveForward: function() { moveForward(32) },
+                  moveLeft: function() { moveLeft(32) },
+                  moveRight: function() { moveRight(32) },
+                  moveBackward: function() { moveBackward(32) }
      };
 
     commands[payload.cmd]();
@@ -69,7 +69,7 @@ var raspi = require('raspi-io'),
         });
 
 //console.log("board:" + board);
-console.log();
+//console.log();
 
 //When connection is ready
 board.on("ready", function(){
@@ -90,70 +90,123 @@ console.log("board on");
 	//this.pinMode(12, five.Pin.OUTPUT);
 	//this.pinMode(13, five.Pin.OUTPUT);
 
-	//this.pinMode(4, five.Pin.OUTPUT);
-	//this.pinMode(6, five.Pin.OUTPUT);
-	//this.pinMode(9, five.Pin.OUTPUT);
 
 	// write pin values to make one motor spin
 	//this.digitalWrite(0, 1);
 	//this.digitalWrite(1, 1);
+  //this.digitalWrite(3, 1);
+  //this.digitalWrite(5, 1);
+  //this.digitalWrite(11, 1);
+  //this.digitalWrite(13, 1);
+
+  //Right Motor 
+  // Direction (1) (0) forward, (0) (1) backward
 	this.digitalWrite(2, 1);
-	//this.digitalWrite(3, 1);
 	this.digitalWrite(4, 0);
-	//this.digitalWrite(5, 1);
+  // Enable/diagnostic
 	this.digitalWrite(6, 1);
+  // Speed
+  this.analogWrite(9, 32);
+
+  //Left Motor
+  // Direction (1) (0) forward, (0) (1) backward
 	this.digitalWrite(7, 1);
 	this.digitalWrite(8, 0);
-	this.analogWrite(9, 32);
+  // Enable/diagnostic
 	this.analogWrite(10, 32);
-	//this.digitalWrite(11, 1);
+  // Speed
 	this.digitalWrite(12, 1);
-	//this.digitalWrite(13, 1);
 
-	//var pin2 = new five.Pin(2);
-	//var pin4 = new five.Pin(4);
-	//var pin6 = new five.Pin(6);
-	//var pin9 = new five.Pin(9);
-
-	//pin9.write(1);
-	//pin2.high();
-	//pin4.low();
-	//pin6.read(function(p) {	console.log(p);});
-	//console.log("50");	
-
-       // var speed, motors;
-        //Initialize motors as pin 0(right) and 1(left)
-       // speed = 400;
-
-      // set the motor going forward full speed
- //         motors.left.forward(255);
-        });
+  function moveForward(speed) {
+    //Right Motor 
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(2, 1);
+    this.digitalWrite(4, 0);
+    // Enable/diagnostic
+    this.digitalWrite(6, 1);
+    // Speed
+    this.analogWrite(9, speed);
 
 
-//         function moveForward() {
-//                 motors.right.start(speed);
-//                 motors.left.start(speed);
-//                 // console.log("Forvard move");
-//         };
+    //Left Motor
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(7, 1);
+    this.digitalWrite(8, 0);
+    // Enable/diagnostic
+    this.analogWrite(10, speed);
+    // Speed
+    this.digitalWrite(12, 1);
 
-//         function moveBackward() {
-//                 motors.right.stop();
-//                 motors.left.stop();
-//                 // console.log("stop");
-//         };
+    console.log("Forvard move");
+        };
 
-//         function turnLeft() {
-//                 motors.right.start(speed);
-//                 motors.left.stop();
-//                 // console.log("turn Left");
-//         };
+  function moveBackward(speed) {
+        //Right Motor 
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(2, 0);
+    this.digitalWrite(4, 1);
+    // Enable/diagnostic
+    this.digitalWrite(6, 1);
+    // Speed
+    this.analogWrite(9, speed);
 
-//         function turnRight() {
-//                 motors.right.stop();
-//                 motors.left.start(speed);
-//                 // console.log("turn right");
-//         };
-// });
+    // Left Motor
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(7, 0);
+    this.digitalWrite(8, 1);
+    // Enable/diagnostic
+    this.analogWrite(10, speed);
+    // Speed
+    this.digitalWrite(12, 1);
+
+    console.log("Backward move");
+  };
+
+  function turnLeft(speed) {
+    //Right Motor 
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(2, 1);
+    this.digitalWrite(4, 0);
+    // Enable/diagnostic
+    this.digitalWrite(6, 1);
+    // Speed
+    this.analogWrite(9, speed);
+
+    // Left Motor
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(7, 0);
+    this.digitalWrite(8, 1);
+    // Enable/diagnostic
+    this.analogWrite(10, speed);
+    // Speed
+    this.digitalWrite(12, 1);
+
+    console.log("turn Left");
+  };
+
+  function turnRight() {
+    //Right Motor 
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(2, 0);
+    this.digitalWrite(4, 1);
+    // Enable/diagnostic
+    this.digitalWrite(6, 1);
+    // Speed
+    this.analogWrite(9, speed);
+
+    // Left Motor
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(7, 1);
+    this.digitalWrite(8, 0);
+    // Enable/diagnostic
+    this.analogWrite(10, speed);
+    // Speed
+    this.digitalWrite(12, 1);
+    console.log("turn right");
+  };
+
+});
+
 
 // $(".direction").on('click',function(){
 //   var command = {cmd: $(this).data('cmd')};
@@ -162,44 +215,7 @@ console.log("board on");
 
 
 
-// //When connection is ready
-// board.on("ready", function(){
-//         //Initialize motors as pin 0(right) and 1(left)
-//         var motorRight = new five.Pin(0);
-//         var motorLeft = new five.Pin(1);
 
-//         this.repl.inject({
-//           motorLeft: motorLeft;
-//           motorRight: motorRight;
-//         })
-
-//         function moveForward() {
-//                 motorRight.write(0);
-//                 motorLeft.write(1);
-//         };
-
-//         function stopMoving() {
-//                 motorRight.write(1);
-//                 motorLeft.write(1);
-//         };
-
-//         function turnLeft() {
-//                 motorRight.write(1);
-//                 motorLeft.write(0);
-//         };
-
-//         function turnRight() {
-//                 motorRight.write(0);
-//                 motorLeft.write(1);
-//         };
-
-//         //create a new 'sonar' hardware instance
-//         // sonar = new five.Sonar(2);
-
-//         // sonar.on("data", function(){
-//         //   console.log("data", "Object is " +  this.inches + "inches away");
-//         // });
-// });
 
 // var movenent = {
 //   connection: null
