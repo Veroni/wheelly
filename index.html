@@ -19,6 +19,10 @@
         outline:none;
     }
 
+    body {
+      background: url("");
+    }
+
     #buttonBox {
       margin-top: 100px;
       margin-bottom: 100px;
@@ -172,7 +176,7 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <div class="arrow-down direction" data-cmd="stopMoving"></div>
+                <div class="arrow-down direction" data-cmd="moveBackward"></div>
               </div>
             </div>
           </div>
@@ -184,5 +188,21 @@
       <div class="col-md-3">&nbsp;</div>
     </div>
   </div>
+
+    <script>
+
+    $('.connectWheelly').on('click', function(){ 
+      // alert("movement: "+ movement);
+      movement.init();
+    });
+
+    $(".direction").on('click',function(){
+      // alert("button clicked"); 
+  var command = {cmd: $(this).data('cmd')};
+  // alert(JSON.stringify(command));
+  movement.connection.send(JSON.stringify(command));
+    });
+
+  </script>
 </body>
 </html>
