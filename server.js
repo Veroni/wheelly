@@ -74,6 +74,11 @@ var raspi = require('raspi-io'),
 //When connection is ready
 board.on("ready", function(){
 console.log("board on");
+
+  var leftSpeed = 0;
+  var rightSpeed = 0;
+  var speedLevels = [0, 32, 64, 128, 255];
+
 	// Configure arduino pin modes
 	//this.pinMode(0, five.Pin.OUTPUT);
 	//this.pinMode(1, five.Pin.OUTPUT);
@@ -99,109 +104,91 @@ console.log("board on");
   //this.digitalWrite(11, 1);
   //this.digitalWrite(13, 1);
 
-  //Right Motor 
-  // Direction (1) (0) forward, (0) (1) backward
-	this.digitalWrite(2, 1);
-	this.digitalWrite(4, 0);
-  // Enable/diagnostic
-	this.digitalWrite(6, 1);
-  // Speed
-  this.analogWrite(9, 32);
+  // Enable/diagnostic right motor
+  this.digitalWrite(6, 1)
+  // Enable/diagnostic left motor
+  this.digitalWrite(12, 1);
 
-  //Left Motor
-  // Direction (1) (0) forward, (0) (1) backward
-	this.digitalWrite(7, 1);
-	this.digitalWrite(8, 0);
-  // Enable/diagnostic
-	this.analogWrite(10, 32);
-  // Speed
-	this.digitalWrite(12, 1);
+  var stateR = function(num1, num2) {
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(2, num1);
+    this.digitalWrite(4, num2);
+  };
+
+  var stateL = function(num1, num2) {
+    // Direction (1) (0) forward, (0) (1) backward
+    this.digitalWrite(7, num1);
+    this.digitalWrite(8, num2);
+  };
+
+  function setState(leftSpeed, rightSpeed) {
+    if (Math.abs(leftSpeed) > speedLevels.length || Math.abs(rightSpeed) > speedLevels.length) {
+      console.log("Error: Speed level is invalid. leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
+    } else {
+      //set direction for left motor
+      if (leftSpeed > 0) {
+        stateL(1, 0);
+      } else if (leftSpeed < 0) {
+        stateL(0, 1);
+      } else { // leftSpeed == 0
+        stateL(0, 0);
+      };
+
+      //set direction for right motor
+      if (rightSpeed > 0) {
+        stateR(1, 0);
+      } else if (rightSpeed < 0) {
+        stateR (0, 1);
+      } else { // rightSpeed == 0
+        stateR(0, 0);
+      }
+    }
+  }
 
   function moveForward(speed) {
-    //Right Motor 
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(2, 1);
-    this.digitalWrite(4, 0);
-    // Enable/diagnostic
-    this.digitalWrite(6, 1);
+
     // Speed
     this.analogWrite(9, speed);
 
-
-    //Left Motor
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(7, 1);
-    this.digitalWrite(8, 0);
-    // Enable/diagnostic
-    this.analogWrite(10, speed);
     // Speed
-    this.digitalWrite(12, 1);
+    this.analogWrite(10, speed);
 
     console.log("Forvard move");
         };
 
   function moveBackward(speed) {
         //Right Motor 
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(2, 0);
-    this.digitalWrite(4, 1);
-    // Enable/diagnostic
-    this.digitalWrite(6, 1);
     // Speed
     this.analogWrite(9, speed);
 
     // Left Motor
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(7, 0);
-    this.digitalWrite(8, 1);
-    // Enable/diagnostic
-    this.analogWrite(10, speed);
     // Speed
-    this.digitalWrite(12, 1);
+    this.analogWrite(10, speed);
 
     console.log("Backward move");
   };
 
   function turnLeft(speed) {
     //Right Motor 
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(2, 1);
-    this.digitalWrite(4, 0);
-    // Enable/diagnostic
-    this.digitalWrite(6, 1);
     // Speed
     this.analogWrite(9, speed);
 
-    // Left Motor
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(7, 0);
-    this.digitalWrite(8, 1);
-    // Enable/diagnostic
-    this.analogWrite(10, speed);
+    // Left Motor;
     // Speed
-    this.digitalWrite(12, 1);
+    this.analogWrite(10, speed);
 
     console.log("turn Left");
   };
 
-  function turnRight() {
+  function turnRight(speed) {
     //Right Motor 
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(2, 0);
-    this.digitalWrite(4, 1);
-    // Enable/diagnostic
-    this.digitalWrite(6, 1);
     // Speed
     this.analogWrite(9, speed);
 
     // Left Motor
-    // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(7, 1);
-    this.digitalWrite(8, 0);
-    // Enable/diagnostic
-    this.analogWrite(10, speed);
     // Speed
-    this.digitalWrite(12, 1);
+    this.analogWrite(10, speed);
+
     console.log("turn right");
   };
 
