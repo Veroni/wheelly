@@ -19,34 +19,38 @@
 var ws = require('ws').Server,
           server = new ws({port: 4000});
 
-if (server) {
+
+var raspi = require('raspi-io'),
+        five = require("johnny-five"),
+        //Initialize connection to Arduino (will crash if none is attached)
+      board = new five.Board({
+          port: "/dev/ttyACM0"
+        });
+
+//When connection is ready
+board.on("ready", function(){
+console.log("board on");
+
+  if (server) {
   console.log('server started');
-}
+  }
 
-// server.on('connection',function(ws){
-//   ws.on('message', function(message) {
-//     console.log('received: %s', message);
-//   });
-//   ws.send('hello world');
-// });
+  server.on('connection', function(client){
+    console.log('Got a new web connection.');
+    //   client.send('New connection');
 
-server.on('connection', function(client){
-  console.log('Got a new web connection.');
-//   client.send('Hello world');
+    client.on('message', function(message) {
+      var payload = JSON.parse(message);
+      console.log('CMD:', message);
 
-  client.on('message', function(message) {
-    var payload = JSON.parse(message);
-    console.log('CMD:', message);
-
-    // var commands = [moveForward, stopMoving, turnLeft, turnRight];
-    var commands = { 
+      var commands = { 
                   moveForward: function() { moveForward() },
                   moveLeft: function() { moveLeft() },
                   moveRight: function() { moveRight() },
                   moveBackward: function() { moveBackward() }
-     };
+      };
 
-    commands[payload.cmd]();
+      commands[payload.cmd]();
     });
 
   client.on('close', function(){
@@ -55,28 +59,12 @@ server.on('connection', function(client){
 
   var payload = {cmd: 'system', value: 'Connected to Wheelly'};
   client.send(JSON.stringify(payload));
-});
-
-
-var raspi = require('raspi-io'),
-        five = require("johnny-five"),
-        // board, sonar;
-        // board;
-        //Initialize connection to Arduino (will crash if none is attached)
-      board = new five.Board({
-          port: "/dev/ttyACM0"//,
-          //io: new raspi()
-        });
-
-//console.log("board:" + board);
-//console.log();
-
-//When connection is ready
-board.on("ready", function(){
-console.log("board on");
+  });
 
   var leftSpeed = 0;
   var rightSpeed = 0;
+  var indexR = 0;
+  var indexL = 0;
   var speedLevels = [0, 32, 64, 128, 255];
 
 	// Configure arduino pin modes
@@ -111,14 +99,14 @@ console.log("board on");
 
   var stateR = function(num1, num2) {
     // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(2, num1);
-    this.digitalWrite(4, num2);
+    board.digitalWrite(2, num1);
+    board.digitalWrite(4, num2);
   };
 
   var stateL = function(num1, num2) {
     // Direction (1) (0) forward, (0) (1) backward
-    this.digitalWrite(7, num1);
-    this.digitalWrite(8, num2);
+    board.digitalWrite(7, num1);
+    board.digitalWrite(8, num2);
   };
 
   // var setMotorDirection = function(speed, state) {
@@ -143,7 +131,7 @@ console.log("board on");
       } else if (leftSpeed < 0) {
         stateL(0, 1);
       } else { // leftSpeed == 0
-        stateL(0, 0);
+        stateL(1, 0);
       };
 
       //set direction for right motor
@@ -152,21 +140,32 @@ console.log("board on");
       } else if (rightSpeed < 0) {
         stateR (0, 1);
       } else { // rightSpeed == 0
-        stateR(0, 0);
+        stateR(0, 1);
       }
     }
   };
 
-  function setSpeed(index1, index2) {
+  function setSpeed(deltaR, deltaL) {
 
     // Speed right motor
-    var indexR = speedLevels.indexOf(rightSpeed) + index2;
-    rightSpeed = speedLevels[indexR];
-    this.analogWrite(9, rightSpeed);
+    // indexR = speedLevels.indexOf(rightSpeed) + deltaR;
+    indexR += deltaR;
+    if (Math.abs(indexR) < speedLevels.length){
+      rightSpeed = speedLevels[Math.abs(indexR)];
+      board.analogWrite(9, rightSpeed);
+    } else {
+      console.log("Maximum speed");
+    };
     // Speed left motor
-    var indexL = speedLevels.indexOf(leftSpeed) + index1;
-    leftSpeed = speedLevels[indexL];
-    this.analogWrite(10, leftSpeed);
+    // indexL = speedLevels.indexOf(leftSpeed) + deltaL;
+    indexL += deltaL;
+    if (Math.abs(indexL) < speedLevels.length){
+      leftSpeed = speedLevels[Math.abs(indexL)];
+      board.analogWrite(10, leftSpeed);
+    } else {
+      console.log("Maximum speed");
+    }
+    setState(indexL, indexR);
   };
 
   // function checkSpeedLevel(speed) {
@@ -174,71 +173,42 @@ console.log("board on");
   // };
 
   function moveForward() {
-    setState(leftSpeed, rightSpeed);
     setSpeed(1, 1);
+    // setState(leftSpeed, rightSpeed);
 
     console.log("Forvard move");
-        };
+  };
 
   function moveBackward() {
-    setState(-leftSpeed, -rightSpeed);
     setSpeed(-1, -1);
+    // setState(-leftSpeed, -rightSpeed);
 
     console.log("Backward move");
   };
 
-  function turnLeft() {
-    setState(-leftSpeed, rightSpeed);
-    setSpeed(0, 1);
+  function moveLeft() {
+    setSpeed(-1, 1);
+    // setState(-leftSpeed, rightSpeed);
 
-    console.log("Turn Left");
+    console.log("Move Left");
   };
 
-  function turnRight() {
-    setState(leftSpeed, -rightSpeed);
-    setSpeed(1, 0);
+  function moveRight() {
+    setSpeed(1, -1);
+    // setState(leftSpeed, -rightSpeed);
 
-    console.log("Turn right");
+    console.log("Move right");
+  };
+
+  function stop() {
+    this.digitalWrite(2, 0);
+    this.digitalWrite(4, 0);
+    this.digitalWrite(7, 0);
+    this.digitalWrite(8, 0);
+    leftSpeed = 0;
+    rightSpeed = 0;
   };
 
 });
 
-
-// var movenent = {
-//   connection: null
-
-//   connect: function() {
-//     .connection = new WebSocket("ws://127.0.0.1:6666");
-//   },
-//   init: function() {
-//     movement.showChatControls($(this));
-//     movement.connect();
-//   },
-//   listen: function() {
-//     if (movement.connection) {
-//       movement.connection.onopen = function(){
-//         movement.announcement('entered');
-//       };
-//       movement.connection.onclose = function() {
-//         movement.announcement('left');
-//       };
-//       movement.connection.onmessage = function(message) {
-//       var payload = JSON.parse(message.data);
-//         movement.payload.cmd](payload);
-//       };
-//     }
-//   },
-//   announcement: function(action) {
-//   var payload = movement.payload( action );
-//     movenent.sendMsg(payload);
-//   },
-
-//   payload: function(cmd, param) {
-//     return {cmd: cmd, value: param};
-//   },
-//   sendMsg: function(payload) {
-//   movement.connection.send(JSON.stringify(payload));
-//   }
-
-//   };
 
