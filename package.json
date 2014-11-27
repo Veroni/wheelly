@@ -1,6 +1,6 @@
 {
   "name": "middleware",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "middle layer between ui and hardware for wheelly-robot",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "layer"
   ],
   "author": "Veroni",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Veroni/wheelly/issues"
   },

@@ -9,15 +9,19 @@
   <script src="robotMovement.js"></script>
   <style>
 
-/*    html { 
+    html { 
       height: 100%;
       width: 100%;
-      margin: 3em 3em 3em 3em;
-      border: solid black;
-      }*/
+/*      margin: 3em 3em 3em 3em;
+      border: solid black;*/
+      }
     *:focus {
         outline:none;
     }
+
+ /*   body {
+      background: url("");
+    }*/
 
     #buttonBox {
       margin-top: 100px;
@@ -135,6 +139,7 @@
     }
 
     .stopButton {
+
        margin-bottom: 2em;
        margin-top: 1em;
        margin-left: 1em;
@@ -142,6 +147,15 @@
        background: #027EBD;
        font-size: 30px ;
     }
+
+/*    .control {
+      vertical-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 5em;
+      width: 75em;
+    }*/
+    
 
 /*    .row {
       border: solid black;
@@ -152,37 +166,44 @@
 
 <body>
   <div class="container">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-4" id="buttonBox">
-        <button class="connectWheelly">Connect Wheelly</button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">&nbsp;</div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-2 arrow-left direction" data-cmd="turnLeft">
-            
-          </div>
-          <div class= "col-md-5 col-md-offset-2">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="arrow-up direction" data-cmd="moveForward"></div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="arrow-down direction" data-cmd="stopMoving"></div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-2 col-md-offset-1 arrow-right direction" data-cmd="turnRight">
-            
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">&nbsp;</div>
-    </div>
+ <!--    <div class="row">
+     <div class="col-md-1 col-xs-3 " >&nbsp;</div>
+      <div class="col-md-10 col-xs-6 col-md-offset-4" > -->
+<!--       <div style=" position:fixed; height: 100%; width: 100%; top:0;left 0;"> -->
+      <img class="control" src="./public/wheelly control1.png " usemap="#control"/>
+      <!-- </div> -->
+      <map name="control">
+        <area class="direction" data-cmd="moveLeft" shape="rect" coords="216, 738, 302, 862" href="#" alt="leftButton">
+        <area class="direction" data-cmd="moveRight" shape="rect" coords="430, 734, 530, 866" href="#" alt="rightButton">
+        <area class="direction" data-cmd="moveForward" shape="rect" coords="290, 668, 424, 754" href="#" alt="forwardButton">
+        <area class="direction" data-cmd="moveBackward" shape="rect" coords="296, 850, 440, 944" href="#" alt="backwardButton">
+        <area class="direction" data-cmd="softStop" shape="rect" coords="316, 766, 408, 842" href="#" alt="softStopButton">
+        <area class="direction" data-cmd="hardStop" shape="rect" coords="1192, 788, 1372, 930" href="#" alt="hardStopButton">
+        <area class="connectWheelly" shape="rect" coords="936, 874, 1046, 922" href="#" alt="connectWheelly">
+      </map>
+<!--       </div>
+      <div class="col-md-1 col-xs-3 " >&nbsp;</div>
+    </div> -->
   </div>
+
+    <script>
+    // $('.direction').on('click', function(){
+      // var command = {cmd: $(this).data('cmd')};
+      // alert("bla" + "cmd: " + JSON.stringify(command));
+    // });
+
+    $('.connectWheelly').on('click', function(){ 
+      // alert("movement: "+ movement);
+      movement.init();
+    });
+
+    $(".direction").on('click',function(){
+      // alert("button clicked"); 
+  var command = {cmd: $(this).data('cmd')};
+  // alert(JSON.stringify(command));
+  movement.connection.send(JSON.stringify(command));
+    });
+
+  </script>
 </body>
 </html>

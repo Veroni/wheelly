@@ -1,0 +1,245 @@
+
+// var http = require("http");
+// var fs = require('fs');
+// var html = '';
+
+// fs.readFile('./index.html','utf8', function(err, data){
+//   if (err) {
+//     return console.log(err);
+//   }
+//   // console.log(data);
+//   html = data;
+// });
+
+// http.createServer(function(request, response){
+
+//   response.end(html);
+// }).listen(6000);
+
+var ws = require('ws').Server,
+          server = new ws({port: 4000});
+
+if (server) {
+  console.log('server started');
+}
+
+// server.on('connection',function(ws){
+//   ws.on('message', function(message) {
+//     console.log('received: %s', message);
+//   });
+//   ws.send('hello world');
+// });
+
+server.on('connection', function(client){
+  console.log('Got a new web connection.');
+//   client.send('Hello world');
+
+  client.on('message', function(message) {
+    var payload = JSON.parse(message);
+    console.log('CMD:', message);
+
+    // var commands = [moveForward, stopMoving, turnLeft, turnRight];
+    var commands = { 
+                  moveForward: function() { console.log("moveForward"); },
+                  moveLeft: function() { console.log("moveLeft"); },
+                  moveRight: function() { console.log("moveRight"); },
+                  moveBackward: function() { console.log("moveBackward"); }
+     };
+
+    commands[payload.cmd]();
+    });
+
+  client.on('close', function(){
+    console.log('disconnected');
+  });
+
+  var payload = {cmd: 'system', value: 'Connected to Wheelly'};
+  client.send(JSON.stringify(payload));
+});
+
+
+var raspi = require('raspi-io'),
+        five = require("johnny-five"),
+        // board, sonar;
+        // board;
+        //Initialize connection to Arduino (will crash if none is attached)
+      board = new five.Board({
+          port: "/dev/ttyACM0",
+          io: new raspi()
+        });
+
+
+//When connection is ready
+board.on("ready", function(){
+        var speed, motors;
+        //Initialize motors as pin 0(right) and 1(left)
+        speed = 400;
+
+        motors = {
+          right: new five.Motor({
+            pins: {
+              pwm: 9,
+              dir: 2,
+              cdir: 4
+            }
+
+          }),
+          left: new five.Motor({
+            pins: {
+              pwm: 10,
+              dir: 7,
+              cdir: 8
+            }
+          })
+        };
+
+        this.repl.inject({
+          motors: motors
+        });
+
+        motors.left.on("start", function(err, timestamp) {
+            console.log("start", timestamp);
+          });
+
+          motors.left.on("stop", function(err, timestamp) {
+            console.log("automated stop on timer", timestamp);
+          });
+
+          motors.left.on("brake", function(err, timestamp) {
+            console.log("automated brake on timer", timestamp);
+          });
+
+          motors.left.on("forward", function(err, timestamp) {
+            console.log("forward", timestamp);
+
+            // demonstrate switching to reverse after 5 seconds
+            board.wait(5000, function() {
+              motors.left.reverse(255);
+            });
+          });
+
+          motors.left.on("reverse", function(err, timestamp) {
+            console.log("reverse", timestamp);
+
+            // demonstrate braking after 5 seconds
+            board.wait(5000, function() {
+
+              // Brake for 500ms and call stop()
+              motors.left.brake(500);
+            });
+          });
+
+          // set the motor going forward full speed
+          motors.forward(255);
+        });
+});
+
+//         function moveForward() {
+//                 motors.right.start(speed);
+//                 motors.left.start(speed);
+//                 // console.log("Forvard move");
+//         };
+
+//         function moveBackward() {
+//                 motors.right.stop();
+//                 motors.left.stop();
+//                 // console.log("stop");
+//         };
+
+//         function turnLeft() {
+//                 motors.right.start(speed);
+//                 motors.left.stop();
+//                 // console.log("turn Left");
+//         };
+
+//         function turnRight() {
+//                 motors.right.stop();
+//                 motors.left.start(speed);
+//                 // console.log("turn right");
+//         };
+// });
+
+// $(".direction").on('click',function(){
+//   var command = {cmd: $(this).data('cmd')};
+//   connection.send(JSON.stringify(command));
+// });
+
+
+
+// //When connection is ready
+// board.on("ready", function(){
+//         //Initialize motors as pin 0(right) and 1(left)
+//         var motorRight = new five.Pin(0);
+//         var motorLeft = new five.Pin(1);
+
+//         this.repl.inject({
+//           motorLeft: motorLeft;
+//           motorRight: motorRight;
+//         })
+
+//         function moveForward() {
+//                 motorRight.write(0);
+//                 motorLeft.write(1);
+//         };
+
+//         function stopMoving() {
+//                 motorRight.write(1);
+//                 motorLeft.write(1);
+//         };
+
+//         function turnLeft() {
+//                 motorRight.write(1);
+//                 motorLeft.write(0);
+//         };
+
+//         function turnRight() {
+//                 motorRight.write(0);
+//                 motorLeft.write(1);
+//         };
+
+//         //create a new 'sonar' hardware instance
+//         // sonar = new five.Sonar(2);
+
+//         // sonar.on("data", function(){
+//         //   console.log("data", "Object is " +  this.inches + "inches away");
+//         // });
+// });
+
+// var movenent = {
+//   connection: null
+
+//   connect: function() {
+//     .connection = new WebSocket("ws://127.0.0.1:6666");
+//   },
+//   init: function() {
+//     movement.showChatControls($(this));
+//     movement.connect();
+//   },
+//   listen: function() {
+//     if (movement.connection) {
+//       movement.connection.onopen = function(){
+//         movement.announcement('entered');
+//       };
+//       movement.connection.onclose = function() {
+//         movement.announcement('left');
+//       };
+//       movement.connection.onmessage = function(message) {
+//       var payload = JSON.parse(message.data);
+//         movement.payload.cmd](payload);
+//       };
+//     }
+//   },
+//   announcement: function(action) {
+//   var payload = movement.payload( action );
+//     movenent.sendMsg(payload);
+//   },
+
+//   payload: function(cmd, param) {
+//     return {cmd: cmd, value: param};
+//   },
+//   sendMsg: function(payload) {
+//   movement.connection.send(JSON.stringify(payload));
+//   }
+
+//   };
+
