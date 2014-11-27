@@ -2,7 +2,11 @@ var movement = {
   connection: null,
   commands: [],
   connect: function(){
-    movement.connection = new WebSocket("ws://10.10.0.117:4000/");
+    var a = document.createElement('a');
+    a.href = window.location.href;
+    var host = a.hostname;
+
+    movement.connection = new WebSocket("ws://" + host + ":4000/");
   },
   listen: function(){
     if (movement.connection){

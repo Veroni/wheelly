@@ -1,21 +1,4 @@
 
-// var http = require("http");
-// var fs = require('fs');
-// var html = '';
-
-// fs.readFile('./index.html','utf8', function(err, data){
-//   if (err) {
-//     return console.log(err);
-//   }
-//   // console.log(data);
-//   html = data;
-// });
-
-// http.createServer(function(request, response){
-
-//   response.end(html);
-// }).listen(6000);
-
 var ws = require('ws').Server,
           server = new ws({port: 4000});
 
