@@ -30,7 +30,9 @@ console.log("board on");
                   moveForward: function() { moveForward() },
                   moveLeft: function() { moveLeft() },
                   moveRight: function() { moveRight() },
-                  moveBackward: function() { moveBackward() }
+                  moveBackward: function() { moveBackward() },
+                  softStop: function() { softStop() },
+                  hardStop: function() { hardStop() }
       };
 
       commands[payload.cmd]();
@@ -102,7 +104,7 @@ console.log("board on");
   //     }
   // };
 
-  function setState(leftSpeed, rightSpeed) {
+  function setState(rightSpeed, leftSpeed) {
     if (Math.abs(leftSpeed) > speedLevels.length || Math.abs(rightSpeed) > speedLevels.length) {
       console.log("Error: Speed level is invalid. leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
     } else {
@@ -148,7 +150,7 @@ console.log("board on");
     } else {
       console.log("Maximum speed");
     }
-    setState(indexL, indexR);
+    setState(indexR, indexL);
   };
 
   // function checkSpeedLevel(speed) {
@@ -170,26 +172,39 @@ console.log("board on");
   };
 
   function moveLeft() {
-    setSpeed(-1, 1);
+    setSpeed(1, -1);
     // setState(-leftSpeed, rightSpeed);
 
     console.log("Move Left");
   };
 
   function moveRight() {
-    setSpeed(1, -1);
+    setSpeed(-1, 1);
     // setState(leftSpeed, -rightSpeed);
 
     console.log("Move right");
   };
 
-  function stop() {
-    this.digitalWrite(2, 0);
-    this.digitalWrite(4, 0);
-    this.digitalWrite(7, 0);
-    this.digitalWrite(8, 0);
-    leftSpeed = 0;
-    rightSpeed = 0;
+  function softStop() {
+    board.analogWrite(9, 0);
+    board.analogWrite(10, 0);
+    indexL = 0;
+    indexR = 0;
+
+    console.log("Soft Stop");
+  }
+
+  function hardStop() {
+    board.digitalWrite(2, 0);
+    board.digitalWrite(4, 0);
+    board.digitalWrite(7, 0);
+    board.digitalWrite(8, 0);
+    board.analogWrite(9, 255);
+    board.analogWrite(10, 255);
+    indexL = 0;
+    indexR = 0;
+
+    console.log("Hard Stop");
   };
 
 });
